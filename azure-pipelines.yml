@@ -19,6 +19,12 @@ steps:
     command: custom
     customCommand: 'test'
 
+steps:
+- task: ak1394.audit-openapi.custom-build-release-task.AuditOpenAPI@0
+  displayName: 'Echo foo'
+  inputs:
+    samplestring: foo
+
 - task: PublishTestResults@2
   inputs:
     testResultsFiles: '**/TEST-RESULTS.xml'
