@@ -25,6 +25,8 @@ steps:
     testRunTitle: 'Test results for JavaScript'
   condition: succeededOrFailed()
 
+- task: FooBar
+
 - task: PublishCodeCoverageResults@1
   inputs: 
     codeCoverageTool: Cobertura
