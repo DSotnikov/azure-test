@@ -25,7 +25,7 @@ steps:
     testRunTitle: 'Test results for JavaScript'
   condition: succeededOrFailed()
 
-- task: FooBar
+- task: AuditOpenAPI@0.1.0
 
 - task: PublishCodeCoverageResults@1
   inputs: 
