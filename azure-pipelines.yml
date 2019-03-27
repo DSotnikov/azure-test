@@ -19,6 +19,11 @@ steps:
     command: custom
     customCommand: 'test'
 
+- task: ak1394.audit-openapi.custom-build-release-task.AuditOpenAPI@0
+  displayName: 'Echo zamg'
+  inputs:
+    samplestring: zamg
+
 - task: PublishTestResults@2
   inputs:
     testResultsFiles: '**/TEST-RESULTS.xml'
