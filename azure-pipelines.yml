@@ -19,7 +19,7 @@ steps:
     command: custom
     customCommand: 'test'
 
-- task: ak1394.audit-openapi.custom-build-release-task.AuditOpenAPI@1
+- task: ak1394.audit-openapi.custom-build-release-task.AuditOpenAPI@0
   displayName: 'Echo foo'
   inputs:
     samplestring: foo
