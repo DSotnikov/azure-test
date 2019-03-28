@@ -23,6 +23,8 @@ steps:
   displayName: 'Echo2 vvvvvv'
   inputs:
     samplestring: vvvvvv
+  env:
+    API_KEY: $(apiKey)
 
 #- task: PublishTestResults@2
 #  inputs:
