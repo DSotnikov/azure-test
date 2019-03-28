@@ -19,10 +19,10 @@ steps:
     command: custom
     customCommand: 'test'
 
-- task: ak1394.audit-openapi.custom-build-release-task.AuditOpenAPI@0
-  displayName: 'Echo zamg'
+- task: ak1394.audit-openapi2.custom-build-release-task2.AuditOpenAPI2@0
+  displayName: 'Echo2 vvvvvv'
   inputs:
-    samplestring: zamg
+    samplestring: vvvvvv
 
 - task: PublishTestResults@2
   inputs:
