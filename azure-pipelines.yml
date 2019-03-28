@@ -25,6 +25,7 @@ steps:
     samplestring: vvvvvv
   env:
     API_KEY: $(apiKey)
+    OPENAPI_PATH: 'swaggers/*'
 
 #- task: PublishTestResults@2
 #  inputs:

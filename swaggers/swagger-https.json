@@ -1,0 +1,177 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "httpbin.org",
+    "description": "API Management facade for a very handy and free online HTTP tool.",
+    "version": "1.0"
+  },
+  "host": "httpbin.org",
+  "schemes": ["https"],
+  "basePath": "/",
+  "paths": {
+    "/status/{code}": {
+      "get": {
+        "description": "Returns provided HTTP Status code.",
+        "operationId": "/status",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "description": "HTTP code to return.",
+            "required": true,
+            "type": "number",
+            "default": 200,
+            "enum": [200]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/get": {
+      "get": {
+        "description": "Returns GET data.",
+        "operationId": "/get",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/post": {
+      "post": {
+        "description": "Returns POST data.",
+        "operationId": "/post",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/patch": {
+      "patch": {
+        "description": "Returns PATCH data.",
+        "operationId": "/patch",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/put": {
+      "put": {
+        "description": "Returns PUT data.",
+        "operationId": "/put",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/delete": {
+      "delete": {
+        "description": "Returns DELETE data.",
+        "operationId": "/delete",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/xml": {
+      "get": {
+        "description": "Returns some XML.",
+        "operationId": "/xml",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/ip": {
+      "get": {
+        "description": "Returns origin IP.",
+        "operationId": "/ip",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/user-agent": {
+      "get": {
+        "description": "Returns user agent string.",
+        "operationId": "/user-agent",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/headers": {
+      "get": {
+        "description": "Returns headers dictionary.",
+        "operationId": "/headers",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/delay/{seconds}": {
+      "get": {
+        "description": "Delays responding for n–10 seconds.",
+        "operationId": "/delay",
+        "parameters": [
+          {
+            "name": "seconds",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "default": 2,
+            "enum": [2]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/cache/{maxAge}": {
+      "get": {
+        "operationId": "/cache",
+        "parameters": [
+          {
+            "name": "maxAge",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "default": 10,
+            "enum": [10]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  }
+}
