@@ -20,12 +20,13 @@ steps:
 #    customCommand: 'test'
 
 - task: ak1394.audit-openapi2.custom-build-release-task2.AuditOpenAPI2@0
-  displayName: 'Echo2 vvvvvv'
+  displayName: 'Audit OpenAPI files'
   inputs:
     samplestring: vvvvvv
   env:
     API_KEY: $(apiKey)
     OPENAPI_PATH: 'swaggers/*'
+    MIN_SCORE: 50
 
 #- task: PublishTestResults@2
 #  inputs:
