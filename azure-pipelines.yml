@@ -26,7 +26,7 @@ steps:
   env:
     API_KEY: $(apiKey)
     OPENAPI_PATH: 'swaggers/*'
-    MIN_SCORE: 30
+    MIN_SCORE: 40
 
 - task: PublishTestResults@2
   inputs:
