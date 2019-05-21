@@ -12,7 +12,7 @@
     }
   },
   "host": "httpbin.org",
-  "schemes": ["http", "https"],
+  "schemes": ["https"],
   "basePath": "/",
   "paths": {
     "/status/{code}": {
