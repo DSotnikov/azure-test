@@ -1,183 +1,458 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "httpbin.org",
-    "description": "API Management facade for a very handy and free online HTTP tool.",
-    "version": "1.0"
-  },
-  "security": [{ "basicAuth": [] }],
-  "securityDefinitions": {
-    "basicAuth": {
-      "type": "basic"
+    "description": "Pixi Photo Sharing API",
+    "version": "1.0.0",
+    "title": "Pixi App API",
+    "contact": {
+      "email": "nicole.becher@owasp.org"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "httpbin.org",
-  "schemes": ["https"],
-  "basePath": "/",
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "users",
+      "description": "Operations available to regular, logged in users"
+    },
+    {
+      "name": "anyone",
+      "description": "Operations available to anyone"
+    }
+  ],
   "paths": {
-    "/status/{code}": {
-      "get": {
-        "description": "Returns provided HTTP Status code.",
-        "operationId": "/status",
-        "parameters": [
-          {
-            "name": "code",
-            "in": "path",
-            "description": "HTTP code to return.",
-            "required": true,
-            "type": "number",
-            "default": 200,
-            "enum": [200]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/get": {
-      "get": {
-        "description": "Returns GET data.",
-        "operationId": "/get",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/post": {
+    "/api/login": {
       "post": {
-        "description": "Returns POST data.",
-        "operationId": "/post",
+        "tags": [
+          "anyone"
+        ],
+        "summary": "login successfully and receive json web token.",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "user",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "pass",
+            "type": "string",
+            "format": "password",
+            "required": true
+          }
+        ],
+        "operationId": "authenticate",
+        "description": "user supplies user name and password and receives a json web token",
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string",
+                  "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
+                }
+              },
+              "required": [
+                "message",
+                "token"
+              ]
+            }
+          },
+          "202": {
+            "description": "successfully request, but invalid password",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          },
+          "422": {
+            "description": "missing parameters"
           }
-        }
+        },
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "security": []
       }
     },
-    "/patch": {
-      "patch": {
-        "description": "Returns PATCH data.",
-        "operationId": "/patch",
+    "/api/register": {
+      "post": {
+        "tags": [
+          "anyone"
+        ],
+        "summary": "register for an account and receive token",
+        "operationId": "register",
+        "description": "user supplies email and password to register and receives a json web token.",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRegistrationData"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "successfully registered, token received",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "token": {
+                  "type": "string",
+                  "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "email address already registered",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
-        }
+        },
+        "security": [],
+        "consumes": [
+          "application/json"
+        ]
       }
     },
-    "/put": {
+    "/api/user/info": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "get user information",
+        "operationId": "userinfo",
+        "description": "user supplies valid token and receives all user info",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-access-token",
+            "description": "Users JWT Token",
+            "required": true,
+            "type": "string",
+            "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful authentication sent user information",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UsersItem"
+              }
+            }
+          },
+          "403": {
+            "description": "invalid or missing token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "success": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
+      }
+    },
+    "/api/user/edit_info": {
       "put": {
-        "description": "Returns PUT data.",
-        "operationId": "/put",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/delete": {
-      "delete": {
-        "description": "Returns DELETE data.",
-        "operationId": "/delete",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/xml": {
-      "get": {
-        "description": "Returns some XML.",
-        "operationId": "/xml",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/ip": {
-      "get": {
-        "description": "Returns origin IP.",
-        "operationId": "/ip",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/user-agent": {
-      "get": {
-        "description": "Returns user agent string.",
-        "operationId": "/user-agent",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/headers": {
-      "get": {
-        "description": "Returns headers dictionary.",
-        "operationId": "/headers",
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        }
-      }
-    },
-    "/delay/{seconds}": {
-      "get": {
-        "description": "Delays responding for n–10 seconds.",
-        "operationId": "/delay",
+        "tags": [
+          "users"
+        ],
+        "summary": "edit user information",
+        "operationId": "edituserinfo",
+        "description": "user supplies valid token and updates all user info",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "seconds",
-            "in": "path",
-            "description": "",
+            "name": "user",
+            "in": "body",
+            "description": "userobject",
             "required": true,
-            "type": "integer",
-            "default": 2,
-            "enum": [2]
+            "schema": {
+              "$ref": "#/definitions/UserRegistrationData"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-access-token",
+            "type": "string",
+            "required": true,
+            "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
           }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "successful authentication sent user information",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          },
+          "403": {
+            "description": "invalid or missing token"
           }
-        }
+        },
+        "consumes": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "access-token": []
+          }
+        ]
       }
     },
-    "/cache/{maxAge}": {
+    "/api/admin/users/search": {
       "get": {
-        "operationId": "/cache",
+        "tags": [
+          "admins"
+        ],
+        "summary": "search for a specific user",
+        "description": "search for a specific user",
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "name": "maxAge",
-            "in": "path",
-            "description": "",
+            "in": "header",
+            "name": "x-access-token",
+            "type": "string",
             "required": true,
-            "type": "integer",
-            "default": 10,
-            "enum": [10]
+            "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "type": "string",
+            "description": "search query ?search=xxx",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "successful authentication user photo json object",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UsersItem"
+              }
+            }
+          },
+          "403": {
+            "description": "invalid or missing token"
           }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "operationId": "search for a specific user"
+      }
+    },
+    "/api/admin/all_users": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UsersItem"
+              }
+            }
+          },
+          "403": {
+            "description": "No token provided or invalid token."
+          }
+        },
+        "tags": [
+          "admins"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "x-access-token",
+            "type": "string",
+            "required": true,
+            "pattern": "^([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_=]{4,})\\.([a-zA-Z0-9_\\-\\+\\/=]{4,})"
+          }
+        ],
+        "summary": "Returns the list of ALL users. Must be admin to call.",
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "description": "Returns the list of ALL users. Must be admin to call.",
+        "operationId": "adminallusers"
+      }
+    }
+  },
+  "definitions": {
+    "UsersItem": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "_id": {
+          "type": "number",
+          "format": "number",
+          "example": 1
+        },
+        "pic": {
+          "type": "string",
+          "format": "uri",
+          "example": 1
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "example": "email@email.com"
+        },
+        "password": {
+          "type": "string",
+          "format": "string",
+          "example": "p@ssword1"
+        },
+        "name": {
+          "type": "string",
+          "example": "Johnny Appleseed"
+        },
+        "is_admin": {
+          "description": "is admin",
+          "type": "boolean"
+        },
+        "account_balance": {
+          "description": "remaining balance",
+          "type": "number"
+        }
+      }
+    },
+    "UserRegistrationData": {
+      "type": "object",
+      "required": [
+        "id",
+        "user",
+        "pass",
+        "name",
+        "is_admin",
+        "account_balance"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "user": {
+          "type": "string",
+          "format": "email",
+          "minLength": 10,
+          "maxLength": 50
+        },
+        "pass": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 12
+        },
+        "name": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 30
+        },
+        "is_admin": {
+          "type": "boolean"
+        },
+        "account_balance": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 1000
         }
       }
     }
-  }
+  },
+  "host": "pixiapp.42crunch-cloud.com:8090",
+  "basePath": "/",
+  "schemes": ["http"],
+  "securityDefinitions": {
+    "access-token": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-access-token",
+      "description": "Most operations need to pass a user token retrieved calling /api/login"
+    }
+  },
+  "security": [
+    {
+      "access-token": []
+    }
+  ],
+  "produces": [
+    "application/json"
+  ]
 }
